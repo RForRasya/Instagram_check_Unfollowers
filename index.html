@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Unfollower Checker</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" type="image/png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;400;700&family=Rubik+Wet+Paint&display=swap" rel="stylesheet">
+
+    <!-- Framer Motion -->
+    <script src="https://cdn.jsdelivr.net/npm/framer-motion@10.0.0/dist/framer-motion.min.js"></script>
+    <script src="https://unpkg.com/lucide-react"></script>
+
+    <style>
+
+.rubik-wet-paint-regular {
+  font-family: "Rubik Wet Paint", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.poppins-thin {
+  font-family: "Poppins", serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.poppins-light {
+  font-family: "Poppins", serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.poppins-regular {
+  font-family: "Poppins", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.poppins-bold {
+  font-family: "Poppins", serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom right, #7F00FF, #E100FF);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 1s ease-out;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #2D3748;
+        }
+
+        .input-wrapper {
+            margin-bottom: 1rem;
+        }
+
+        .file-input-label {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: white;
+            transition: background-color 0.3s;
+        }
+
+        .file-input-label:hover {
+            background-color: #F7FAFC;
+        }
+
+        .file-input-label input {
+            display: none;
+        }
+
+        .file-input-label .icon {
+            margin-right: 8px;
+        }
+
+        .btn {
+            background-color: #4C51BF;
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s;
+            margin-top: 1.5rem;
+        }
+
+        .btn:hover {
+            background-color: #434190;
+        }
+
+        .unfollowers-list {
+            margin-top: 1.5rem;
+            text-align: left;
+        }
+
+        .unfollowers-list a {
+            color: #4C51BF;
+            text-decoration: none;
+            display: block;
+            margin: 0.5rem 0;
+        }
+
+        .unfollowers-list a:hover {
+            text-decoration: underline;
+        }
+
+        .unfollowers-list img {
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            margin-right: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.875rem;
+            color: #4A5568;
+        }
+
+        footer a {
+            color: #4C51BF;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="formContainer">
+    <h1>Instagram Unfollower Checker</h1>
+    
+    <div class="input-wrapper">
+        <label for="followersFile" class="file-input-label">
+            <span class="icon">📥</span>
+            <span id="followersLabel">Choose Followers File</span>
+            <input type="file" id="followersFile" accept=".json" />
+        </label>
+    </div>
+    
+    <div class="input-wrapper">
+        <label for="followingFile" class="file-input-label">
+            <span class="icon">📥</span>
+            <span id="followingLabel">Choose Following File</span>
+            <input type="file" id="followingFile" accept=".json" />
+        </label>
+    </div>
+
+    <button class="btn" id="checkBtn" onclick="processFiles()">Check Unfollowers</button>
+    
+    <div class="unfollowers-list" id="result"></div>
+
+    <div class="footer">
+        <p>&copy; 2024 Instagram Unfollower Checker | Bugard Checker <a href="mailto:bugardmc780@gmail.com">Contact Us</a></p>
+    </div>
+</div>
+
+<!-- Back Button Container -->
+<div class="container" id="backContainer" style="display: none;">
+    <h2>Unfollowers Result</h2>
+    <div class="unfollowers-list" id="unfollowersResult"></div>
+    <button class="btn" onclick="goBack()">Back</button>
+</div>
+
+<script>
+    let followersFile = null;
+    let followingFile = null;
+
+    document.getElementById('followersFile').addEventListener('change', (e) => {
+        followersFile = e.target.files[0];
+        document.getElementById('followersLabel').textContent = followersFile.name;
+    });
+
+    document.getElementById('followingFile').addEventListener('change', (e) => {
+        followingFile = e.target.files[0];
+        document.getElementById('followingLabel').textContent = followingFile.name;
+    });
+
+    function readFile(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const jsonData = JSON.parse(event.target.result);
+                    resolve(jsonData);
+                } catch (e) {
+                    reject("Error parsing JSON file");
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
+
+    function extractUsernames(data) {
+        let usernames = [];
+        if (Array.isArray(data)) {
+            data.forEach(entry => {
+                if (typeof entry === 'object' && entry !== null) {
+                    entry.string_list_data?.forEach((item) => {
+                        if (item.value) usernames.push(item.value);
+                    });
+                } else if (typeof entry === 'string') {
+                    usernames.push(entry);
+                }
+            });
+        } else if (typeof data === 'object' && data !== null) {
+            for (let key in data) {
+                if (Array.isArray(data[key])) {
+                    usernames.push(...extractUsernames(data[key]));
+                }
+            }
+        }
+        return usernames;
+    }
+
+    function processFiles() {
+        if (!followersFile || !followingFile) {
+            alert("Please upload both JSON files first.");
+            return;
+        }
+
+        document.getElementById('checkBtn').disabled = true;
+        document.getElementById('checkBtn').textContent = 'Processing...';
+
+        Promise.all([readFile(followersFile), readFile(followingFile)]).then(([followersData, followingData]) => {
+            const followersUsernames = extractUsernames(followersData);
+            const followingUsernames = extractUsernames(followingData);
+            const unfollowers = followingUsernames.filter(account => !followersUsernames.includes(account));
+            displayResult(unfollowers);
+        }).catch(error => {
+            alert(error);
+        }).finally(() => {
+            document.getElementById('checkBtn').disabled = false;
+            document.getElementById('checkBtn').textContent = 'Check Unfollowers';
+        });
+    }
+
+    function displayResult(unfollowers) {
+        document.getElementById('formContainer').style.display = 'none';
+        document.getElementById('backContainer').style.display = 'block';
+
+        const resultDiv = document.getElementById('unfollowersResult');
+        resultDiv.innerHTML = '';
+
+        if (unfollowers.length === 0) {
+            resultDiv.innerHTML = '<p>You have no unfollowers!</p>';
+        } else {
+            let output = '<h2>Unfollowers:</h2><ul>';
+            unfollowers.forEach(account => {
+                // Ubah URL foto profil dengan parameter ?igsh=ZjgxYmk3Z251dGd4
+                const profileUrl = `https://www.instagram.com/${account}?igsh=ZjgxYmk3Z251dGd4`;
+                output += `<li><img src="https://www.instagram.com/${account}/profile_picture/?igsh=ZjgxYmk3Z251dGd4" alt="${account}'s profile" /> <a href="${profileUrl}" target="_blank">@${account}</a></li>`;
+            });
+            output += '</ul>';
+            resultDiv.innerHTML = output;
+        }
+    }
+
+    function goBack() {
+        // Reset file inputs and results
+        document.getElementById('followersFile').value = '';
+        document.getElementById('followingFile').value = '';
+        document.getElementById('followersLabel').textContent = 'Choose Followers File';
+        document.getElementById('followingLabel').textContent = 'Choose Following File';
+
+        // Switch back to the form view
+        document.getElementById('formContainer').style.display = 'block';
+        document.getElementById('backContainer').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
